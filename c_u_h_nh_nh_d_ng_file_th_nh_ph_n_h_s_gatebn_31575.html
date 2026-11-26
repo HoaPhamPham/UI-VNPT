@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Danh mục thủ tục - Hệ thống Dữ liệu một cửa (GATEBN-31575)</title>
+  <!-- Google Fonts: Inter & Merriweather -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              DEFAULT: '#b86b43',
+              dark: '#9e5733',
+              accent: '#c26a3d',
+              bell: '#d97746',
+              light: '#f7ebe3',
+              soft: '#fdf8f5',
+              border: '#e6cbb9'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Merriweather', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8f9fa;
+      color: #1e293b;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.96) translateY(-4px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    .animate-pop {
+      animation: popIn 0.16s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex overflow-x-hidden">
+
+  <!-- OVERLAY SIDEBAR CHO MOBILE -->
+  <div id="sidebarOverlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/40 z-30 hidden lg:hidden"></div>
+
+  <!-- 1. SIDEBAR BÊN TRÁI (RỘNG ~240PX) -->
+  <aside id="sidebar" class="w-[240px] shrink-0 bg-white border-r border-[#e5e7eb] flex flex-col fixed lg:static inset-y-0 left-0 z-40 transition-all duration-200 -translate-x-full lg:translate-x-0">
+    <!-- Khối header trên cùng màu cam đất #b86b43, cao ~125px -->
+    <div class="bg-[#b86b43] text-white px-5 py-4 h-[125px] flex items-center select-none">
+      <h1 class="font-serif text-[15.5px] leading-[1.45] tracking-wide uppercase font-bold text-left">
+        ỦY BAN NHÂN DÂN<br />
+        THÀNH PHỐ HỒ<br />
+        CHÍ MINH
+      </h1>
+    </div>
+
+    <!-- Menu điều hướng -->
+    <nav class="flex-1 overflow-y-auto py-2.5 text-[13.5px] font-medium text-[#334155] select-none">
+      <!-- Mục cấp 1: Tiện ích -->
+      <button type="button" class="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-colors">
+        <span class="flex items-center gap-3">
+          <i data-lucide="headset" class="w-[18px] h-[18px] text-[#334155]"></i>
+          <span>Tiện ích</span>
+        </span>
+        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500"></i>
+      </button>
+
+      <!-- Mục cấp 1: Xử lý hồ sơ -->
+      <button type="button" class="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-colors">
+        <span class="flex items-center gap-3">
+          <i data-lucide="folder-check" class="w-[18px] h-[18px] text-[#334155]"></i>
+          <span>Xử lý hồ sơ</span>
+        </span>
+        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500"></i>
+      </button>
+
+      <div class="border-t border-slate-100 my-1"></div>
+
+      <!-- Mục cấp 1: Dữ liệu một cửa (Đang mở) -->
+      <div>
+        <button type="button" onclick="toggleSubmenu()" class="w-full flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-colors">
+          <span class="flex items-center gap-3 font-semibold text-[#1e293b]">
+            <i data-lucide="network" class="w-[18px] h-[18px] text-[#b86b43]"></i>
+            <span>Dữ liệu một cửa</span>
+          </span>
+          <i id="submenuChevron" data-lucide="chevron-up" class="w-4 h-4 text-slate-600 transition-transform"></i>
+        </button>
+
+        <!-- Menu con dưới "Dữ liệu một cửa" -->
+        <div id="oneDoorSubmenu" class="pr-2 space-y-0.5 mt-0.5 text-[#334155]">
+          <a href="javascript:void(0)" class="block pl-11 pr-3 py-2.5 text-[13px] hover:bg-slate-50 rounded-r-lg transition-colors">
+            Danh mục lĩnh vực
+          </a>
+          <a href="javascript:void(0)" class="block pl-11 pr-3 py-2.5 text-[13px] hover:bg-slate-50 rounded-r-lg transition-colors">
+            Danh mục nhóm giấy tờ
+          </a>
+          <a href="javascript:void(0)" class="block pl-11 pr-3 py-2.5 text-[13px] hover:bg-slate-50 rounded-r-lg transition-colors">
+            Danh mục giấy tờ
+          </a>
+          <!-- Đang active: nền bo góc màu kem nhạt (#f7ebe3), chữ màu cam đất (#b86b43) -->
+          <a href="javascript:void(0)" class="block pl-11 pr-3 py-2.5 text-[13px] font-semibold bg-[#f7ebe3] text-[#b86b43] rounded-r-lg transition-colors">
+            Danh mục thủ tục
+          </a>
+          <a href="javascript:void(0)" class="block pl-11 pr-3 py-2.5 text-[13px] hover:bg-slate-50 rounded-r-lg transition-colors">
+            Danh mục loại phí/ lệ phí
+          </a>
+          <a href="javascript:void(0)" class="block pl-11 pr-3 py-2.5 text-[13px] hover:bg-slate-50 rounded-r-lg transition-colors">
+            Danh mục phí/ lệ phí
+          </a>
+          <a href="javascript:void(0)" class="block pl-11 pr-3 py-2.5 text-[13px] hover:bg-slate-50 rounded-r-lg transition-colors">
+            Cấu hình phiếu động
+          </a>
+          <a href="javascript:void(0)" class="block pl-11 pr-3 py-2.5 text-[13px] hover:bg-slate-50 rounded-r-lg transition-colors leading-snug">
+            Phân công cơ quan HCC một cấp
+          </a>
+          <a href="javascript:void(0)" class="block pl-11 pr-3 py-2.5 text-[13px] hover:bg-slate-50 rounded-r-lg transition-colors">
+            Danh mục quy trình
+          </a>
+        </div>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- KHU VỰC BÊN PHẢI -->
+  <div class="flex-1 flex flex-col min-w-0">
+
+    <!-- 2. TOPBAR BÊN TRÊN (CAO ~56PX) -->
+    <header class="h-[56px] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] border-b border-slate-200/80 px-4 lg:px-6 flex items-center justify-between sticky top-0 z-20">
+      <!-- Bên trái: Icon thu gọn menu màu cam + text "Ủy ban nhân dân Thành phố Hồ Chí Minh" + mũi tên dropdown nhỏ -->
+      <div class="flex items-center gap-3 min-w-0">
+        <button type="button" onclick="toggleSidebar()" class="p-1.5 rounded-lg text-[#b86b43] hover:bg-[#f7ebe3]/70 transition-colors" title="Thu gọn / Mở rộng menu">
+          <i data-lucide="list-collapse" class="w-5 h-5"></i>
+        </button>
+        <button type="button" class="flex items-center gap-2 text-[15.5px] sm:text-[17px] font-semibold text-[#1e293b] truncate hover:text-[#b86b43] transition-colors">
+          <span class="truncate">Ủy ban nhân dân Thành phố Hồ Chí Minh</span>
+          <i data-lucide="chevron-down" class="w-4 h-4 text-slate-600 shrink-0"></i>
+        </button>
+      </div>
+
+      <!-- Bên phải -->
+      <div class="flex items-center gap-2 sm:gap-3.5 shrink-0">
+        <!-- Icon ngôi nhà (Home) -->
+        <button type="button" class="p-1.5 text-slate-700 hover:bg-slate-100 rounded-full transition-colors hidden sm:flex" title="Trang chủ">
+          <i data-lucide="home" class="w-[19px] h-[19px]"></i>
+        </button>
+
+        <!-- Icon chuông thông báo màu cam (#d97746) -->
+        <button type="button" class="p-1.5 text-[#d97746] hover:bg-[#f7ebe3]/70 rounded-full transition-colors relative" title="Thông báo">
+          <i data-lucide="bell" class="w-[19px] h-[19px] fill-[#d97746]/25"></i>
+        </button>
+
+        <div class="h-4 w-[1px] bg-slate-200 hidden sm:block"></div>
+
+        <!-- Icon lưới 9 chấm (App launcher) -->
+        <button type="button" class="p-1.5 text-slate-700 hover:bg-slate-100 rounded-full transition-colors hidden sm:flex" title="Ứng dụng">
+          <i data-lucide="grip" class="w-[19px] h-[19px]"></i>
+        </button>
+
+        <div class="h-4 w-[1px] bg-slate-200 hidden md:block"></div>
+
+        <!-- Avatar hoạt hình nhân vật nam đeo kính + "Nguyễn T. Quốc Bảo" -->
+        <div class="flex items-center gap-2 cursor-pointer py-1 px-1.5 rounded-lg hover:bg-slate-50">
+          <div class="w-8 h-8 rounded-full bg-[#f7ebe3] border border-[#e6cbb9] flex items-center justify-center overflow-hidden shrink-0">
+            <svg viewBox="0 0 36 36" class="w-full h-full">
+              <rect width="36" height="36" fill="#F3E5D8"/>
+              <!-- Tóc -->
+              <path d="M11 13c0-4.5 3.2-7 7-7s7 2.5 7 7c0 1-.2 1.8-.5 2.5H11.5c-.3-.7-.5-1.5-.5-2.5z" fill="#2D3748"/>
+              <!-- Khuôn mặt -->
+              <circle cx="18" cy="14.5" r="5.5" fill="#F6C3A5"/>
+              <!-- Kính đeo mắt -->
+              <rect x="13.2" y="13" width="4" height="2.6" rx="0.8" fill="#FFFFFF" fill-opacity="0.4" stroke="#1E293B" stroke-width="1.1"/>
+              <rect x="18.8" y="13" width="4" height="2.6" rx="0.8" fill="#FFFFFF" fill-opacity="0.4" stroke="#1E293B" stroke-width="1.1"/>
+              <line x1="17.2" y1="14.2" x2="18.8" y2="14.2" stroke="#1E293B" stroke-width="1.1"/>
+              <!-- Áo -->
+              <path d="M8.5 33c1.5-6 5.5-8.5 9.5-8.5s8 2.5 9.5 8.5" fill="#3B5998"/>
+              <polygon points="18,24.5 16,28 20,28" fill="#FFFFFF"/>
+            </svg>
+          </div>
+          <span class="text-[13px] font-medium text-[#1e293b] hidden md:inline">Nguyễn T. Quốc Bảo</span>
+        </div>
+
+        <!-- Vạch chia dọc mờ -->
+        <div class="h-4 w-[1px] bg-slate-200 hidden sm:block"></div>
+
+        <!-- Quốc kỳ Việt Nam + "Tiếng Việt" + mũi tên xuống -->
+        <button type="button" class="flex items-center gap-2 px-1.5 py-1 rounded-lg hover:bg-slate-50 text-[13px] font-medium text-[#1e293b]">
+          <span class="w-6 h-4 rounded-[2px] bg-[#DA251D] flex items-center justify-center shrink-0 shadow-2xs">
+            <svg viewBox="0 0 24 24" class="w-3 h-3 fill-[#FFFF00]">
+              <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+            </svg>
+          </span>
+          <span class="hidden sm:inline">Tiếng Việt</span>
+          <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-600"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- 3. VÙNG NỘI DUNG CHÍNH (NỀN #f8f9fa) -->
+    <main class="flex-1 p-4 sm:p-6 bg-[#f8f9fa]">
+      <!-- Tiêu đề trang -->
+      <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <h2 class="text-[18px] font-bold text-[#1e293b]">Danh mục thủ tục</h2>
+      </div>
+
+      <!-- Card trắng bo góc, viền mảnh -->
+      <div class="bg-white rounded-xl border border-[#e5e7eb] shadow-[0_1px_2px_rgba(0,0,0,0.03)] p-4 sm:p-6">
+        <!-- Header Card -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+          <h3 class="text-[15px] font-semibold text-[#1e293b]">
+            Thành phần hồ sơ của thủ tục: 1.014748 - Hưởng trợ cấp thất nghiệp (Cấp tỉnh)
+          </h3>
+
+          <button type="button" onclick="showToast('Đang mở biểu mẫu thêm mới thành phần hồ sơ.', 'info')" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-[#e5e7eb] hover:bg-[#d1d5db] text-[#374151] font-medium text-[13px] transition-colors shrink-0 self-start sm:self-auto">
+            <i data-lucide="plus" class="w-4 h-4 text-[#b86b43]"></i>
+            <span>Thêm mới</span>
+          </button>
+        </div>
+
+        <!-- Bảng dữ liệu -->
+        <div class="overflow-x-auto rounded-lg border border-[#e5e7eb]">
+          <table class="w-full text-left border-collapse min-w-[980px]">
+            <thead>
+              <tr class="bg-[#e2e3e5] text-[#1e293b] text-[13px] font-semibold border-b border-[#d1d5db]">
+                <th class="py-3 px-3.5 w-14 text-center">STT</th>
+                <th class="py-3 px-3.5 w-36">Tên tắt giấy tờ</th>
+                <th class="py-3 px-3.5 w-72">Tên giấy tờ</th>
+                <th class="py-3 px-3 w-24">Là giấy tờ đầu ra</th>
+                <th class="py-3 px-3 w-36">Mẫu đơn, Tờ khai</th>
+                <th class="py-3 px-3.5 w-40">Số lượng/ loại bản</th>
+                <th class="py-3 px-3 w-24">Trạng thái</th>
+                <th class="py-3 px-3 w-24">Quy trình</th>
+                <th class="py-3 px-3 w-24">Thứ tự hiển thị</th>
+                <th class="py-3 px-3.5 w-24 text-center">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="documentTableBody" class="divide-y divide-[#e5e7eb] text-[13px] text-[#1e293b]">
+              <!-- Render động từ JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Thanh phân trang cuối card -->
+        <div class="mt-4 pt-1 flex flex-col sm:flex-row items-center justify-between gap-4 text-[13px] text-[#1e293b]">
+          <div class="flex items-center gap-2">
+            <span>Hiển thị</span>
+            <div class="relative">
+              <select class="appearance-none bg-white border border-slate-300 rounded-lg pl-3 pr-7 py-1.5 text-[13px] font-medium focus:outline-none focus:border-[#b86b43]">
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+              </select>
+              <i data-lucide="chevron-down" class="w-3.5 h-3.5 text-slate-500 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+            </div>
+            <span>trên 3 bản ghi</span>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            <button type="button" disabled class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 cursor-not-allowed">
+              <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </button>
+            <button type="button" class="w-8 h-8 rounded-lg bg-[#c26a3d] text-white font-semibold text-[13px] flex items-center justify-center shadow-2xs">
+              1
+            </button>
+            <button type="button" disabled class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 cursor-not-allowed">
+              <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 4. MENU POPOVER KHI NHẤN VÀO ICON ... Ở CỘT THAO TÁC -->
+  <div id="actionDropdownMenu" class="fixed z-40 hidden w-[238px] bg-white rounded-xl shadow-[0_10px_28px_-4px_rgba(15,23,42,0.18)] border border-slate-200/80 py-1.5 animate-pop">
+    <!-- 1. Cập nhật -->
+    <button type="button" onclick="handleActionClick('update')" class="w-full px-4 py-2.5 text-left text-[13px] font-medium text-[#1e293b] hover:bg-[#fdf8f5] flex items-center gap-3 transition-colors">
+      <i data-lucide="pencil" class="w-4 h-4 text-[#c26a3d]"></i>
+      <span>Cập nhật</span>
+    </button>
+
+    <!-- 2. Biểu mẫu giấy tờ -->
+    <button type="button" onclick="handleActionClick('template')" class="w-full px-4 py-2.5 text-left text-[13px] font-medium text-[#1e293b] hover:bg-[#fdf8f5] flex items-center gap-3 transition-colors">
+      <i data-lucide="list" class="w-4 h-4 text-[#c26a3d]"></i>
+      <span>Biểu mẫu giấy tờ</span>
+    </button>
+
+    <!-- 3. Đặt làm giấy tờ đầu ra -->
+    <button type="button" onclick="handleActionClick('output')" class="w-full px-4 py-2.5 text-left text-[13px] font-medium text-[#1e293b] hover:bg-[#fdf8f5] flex items-center gap-3 transition-colors">
+      <i data-lucide="log-in" class="w-4 h-4 text-[#c26a3d]"></i>
+      <span>Đặt làm giấy tờ đầu ra</span>
+    </button>
+
+    <!-- 4. [MỚI] Cấu hình định dạng file -->
+    <button type="button" onclick="handleActionClick('config_format')" class="w-full px-4 py-2.5 text-left text-[13px] font-semibold text-[#b86b43] bg-[#fdf8f5] hover:bg-[#f7ebe3] flex items-center justify-between transition-colors border-y border-[#f7ebe3] my-0.5">
+      <span class="flex items-center gap-3">
+        <i data-lucide="file-cog" class="w-4 h-4 text-[#c26a3d]"></i>
+        <span>Cấu hình định dạng file</span>
+      </span>
+
+    </button>
+
+    <!-- 5. Xóa -->
+    <button type="button" onclick="handleActionClick('delete')" class="w-full px-4 py-2.5 text-left text-[13px] font-medium text-[#1e293b] hover:bg-red-50 hover:text-red-600 flex items-center gap-3 transition-colors">
+      <i data-lucide="trash-2" class="w-4 h-4 text-[#c26a3d]"></i>
+      <span>Xóa</span>
+    </button>
+  </div>
+
+  <!-- MODAL POPUP: CẤU HÌNH ĐỊNH DẠNG FILE UPLOAD THÀNH PHẦN HỒ SƠ (GATEBN-31575) -->
+  <div id="formatConfigModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/45 backdrop-blur-[1px]">
+    <div class="bg-white w-full max-w-[610px] rounded-2xl shadow-2xl border border-slate-200 overflow-visible animate-pop flex flex-col">
+      <!-- Header modal -->
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-[#fdf8f5] rounded-t-2xl">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-[#f7ebe3] border border-[#e6cbb9] flex items-center justify-center text-[#b86b43] shrink-0">
+            <i data-lucide="file-cog" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h4 class="text-[15.5px] font-bold text-[#1e293b]">Cấu hình định dạng file</h4>
+      
+          </div>
+        </div>
+        <button type="button" onclick="closeFormatModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors" title="Đóng">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Body modal -->
+      <div class="p-6 space-y-5">
+        <!-- Khối thông tin thành phần hồ sơ đang chọn -->
+        <div class="bg-slate-50 border border-slate-200/90 rounded-xl p-3.5 space-y-1.5">
+          <div class="flex flex-wrap items-center gap-2 text-xs">
+            <span class="text-slate-500 font-medium">Mã giấy tờ:</span>
+            <span id="modalDocCode" class="font-semibold text-[#c26a3d] bg-[#f7ebe3] border border-[#e6cbb9] px-2 py-0.5 rounded">000.00.00.G11-KQ1862</span>
+          </div>
+          <div class="text-[13.5px] text-[#1e293b] leading-snug">
+            <span class="text-slate-500 font-medium text-xs block mb-0.5">Tên giấy tờ:</span>
+            <span id="modalDocName" class="font-semibold">Sổ bảo hiểm xã hội.</span>
+          </div>
+        </div>
+
+        <!-- Điều khiển Multi-select Dropdown -->
+        <div class="space-y-2">
+          <div>
+            <label class="text-[13.5px] font-semibold text-[#1e293b] block">
+              Định dạng file cho phép tải lên
+            </label>
+            <span class="text-[12px] text-slate-500">Chọn 1 hoặc nhiều định dạng từ danh sách định dạng hệ thống</span>
+          </div>
+
+          <!-- Custom Multi-select Container -->
+          <div id="multiSelectContainer" class="relative">
+            <!-- Ô hiển thị tag/chip đã chọn -->
+            <div id="multiSelectTrigger" onclick="toggleFormatDropdown()" class="min-h-[46px] w-full bg-white border-2 border-slate-300 hover:border-[#b86b43] focus-within:border-[#b86b43] rounded-xl px-3 py-2 flex items-center justify-between gap-2 cursor-pointer transition-colors">
+              <div id="selectedChipsContainer" class="flex flex-wrap items-center gap-1.5 flex-1">
+                <!-- Các tag định dạng đã chọn -->
+              </div>
+              <div class="flex items-center gap-1.5 shrink-0 pl-1">
+                <button type="button" id="clearAllIconBtn" onclick="clearAllFormats(event)" class="hidden p-1 text-slate-400 hover:text-red-500 rounded-md hover:bg-slate-100 transition-colors" title="Xóa tất cả định dạng đã chọn">
+                  <i data-lucide="x-circle" class="w-4 h-4"></i>
+                </button>
+                <i id="dropdownArrowIcon" data-lucide="chevron-down" class="w-4 h-4 text-slate-500 transition-transform duration-150"></i>
+              </div>
+            </div>
+
+            <!-- Danh sách xổ xuống (Checkbox list + tìm kiếm nhanh) -->
+            <div id="formatDropdownList" class="hidden absolute left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-xl z-50 overflow-hidden animate-pop">
+              <!-- Thanh tìm kiếm & nút chọn nhanh -->
+              <div class="p-2.5 border-b border-slate-100 bg-slate-50/80 space-y-2">
+                <div class="relative">
+                  <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+                  <input id="formatSearchInput" type="text" oninput="filterFormatOptions(this.value)" placeholder="Tìm kiếm nhanh định dạng (ví dụ: pdf, word, ảnh, zip...)" class="w-full bg-white border border-slate-200 rounded-lg pl-9 pr-3 py-1.5 text-[13px] focus:outline-none focus:border-[#b86b43]" />
+                </div>
+                <div class="flex items-center justify-between px-1 text-[12px]">
+                  <span id="dropdownSelectedSummary" class="text-slate-500 font-medium">Đã chọn: 0 định dạng</span>
+                  <div class="flex items-center gap-2.5">
+                    <button type="button" onclick="selectAllFormats()" class="text-[#b86b43] hover:underline font-semibold">Chọn tất cả</button>
+                    <span class="text-slate-300">|</span>
+                    <button type="button" onclick="clearAllFormats(event)" class="text-slate-500 hover:text-red-600 hover:underline font-medium">Bỏ chọn tất cả</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Danh sách các item có checkbox -->
+              <div id="formatOptionsContainer" class="max-h-[235px] overflow-y-auto divide-y divide-slate-100">
+                <!-- Render bằng JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer modal -->
+      <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-2.5 rounded-b-2xl">
+        <button type="button" onclick="closeFormatModal()" class="px-4 py-2 rounded-lg bg-[#e5e7eb] hover:bg-[#d1d5db] text-[#374151] font-medium text-[13px] transition-colors">
+          Hủy
+        </button>
+        <button type="button" onclick="saveFormatConfig()" class="px-5 py-2 rounded-lg bg-[#b86b43] hover:bg-[#9e5733] text-white font-semibold text-[13px] shadow-2xs flex items-center gap-1.5 transition-colors">
+          <i data-lucide="check" class="w-4 h-4"></i>
+          <span>Lưu</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST THÔNG BÁO GÓC PHẢI TRÊN -->
+  <div id="toastContainer" class="fixed top-[68px] right-5 z-[60] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- THANH CHUYỂN ĐỔI NHANH TRẠNG THÁI XEM Ở GÓC DƯỚI BÊN TRÁI (HỖ TRỢ CHỤP ẢNH ĐẶC TẢ BA) -->
+  <div id="previewSwitcherBar" class="fixed bottom-4 left-4 z-50 bg-white/95 backdrop-blur border border-slate-300 shadow-lg rounded-xl p-2 flex items-center gap-1.5 text-[12px]">
+    <button type="button" onclick="togglePreviewBarBody()" class="p-1.5 rounded-lg bg-[#f7ebe3] text-[#b86b43] hover:bg-[#ebd7c9] transition-colors" title="Thu gọn / Mở rộng thanh xem nhanh">
+      <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
+    </button>
+    <div id="previewBarBody" class="flex flex-wrap items-center gap-1.5 pr-1">
+      <span class="text-slate-500 font-medium px-1 hidden sm:inline">Chế độ xem:</span>
+      <button type="button" id="btnModeTableMenu" onclick="switchPreviewMode('table_menu')" class="px-2.5 py-1.5 rounded-lg font-semibold bg-[#b86b43] text-white transition-colors">
+        1. Bảng + Menu thao tác
+      </button>
+      <button type="button" id="btnModeModal" onclick="switchPreviewMode('modal_open')" class="px-2.5 py-1.5 rounded-lg font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors">
+        2. Popup cấu hình định dạng
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // DANH SÁCH ĐỊNH DẠNG FILE ĐANG CÓ TRÊN HỆ THỐNG
+    const SYSTEM_FILE_FORMATS = [
+      { ext: '.pdf', desc: 'Tài liệu PDF (Portable Document Format)' },
+      { ext: '.doc', desc: 'Tài liệu Microsoft Word 97-2003' },
+      { ext: '.docx', desc: 'Tài liệu Microsoft Word' },
+      { ext: '.xls', desc: 'Bảng tính Microsoft Excel 97-2003' },
+      { ext: '.xlsx', desc: 'Bảng tính Microsoft Excel' },
+      { ext: '.jpg', desc: 'Hình ảnh JPEG' },
+      { ext: '.jpeg', desc: 'Hình ảnh JPEG' },
+      { ext: '.png', desc: 'Hình ảnh PNG' },
+      { ext: '.xml', desc: 'Dữ liệu có cấu trúc XML' },
+      { ext: '.zip', desc: 'Tệp nén ZIP' },
+      { ext: '.rar', desc: 'Tệp nén RAR' }
+    ];
+
+    // DỮ LIỆU 3 DÒNG CHÍNH XÁC NHƯ ẢNH MẪU
+    let documentRows = [
+      {
+        id: 1,
+        stt: 1,
+        shortCode: '000.00.00.G11-KQ1862',
+        name: '1. Sổ bảo hiểm xã hội.',
+        isOutput: false,
+        template: '',
+        quantities: ['1 Bản sao', '1 Bản điện tử'],
+        status: 'Mở',
+        process: 'Tất cả',
+        order: 0,
+        allowedFormats: ['.pdf', '.jpg', '.png']
+      },
+      {
+        id: 2,
+        stt: 2,
+        shortCode: 'G09-KQ003310',
+        name: 'Đề nghị hưởng trợ cấp thất nghiệp Mẫu số 10 tại Phụ lục ban hành kèm...',
+        isOutput: false,
+        template: '',
+        quantities: ['1 Bản chính', '1 Bản điện tử'],
+        status: 'Mở',
+        process: 'Tất cả',
+        order: 0,
+        allowedFormats: []
+      },
+      {
+        id: 3,
+        stt: 3,
+        shortCode: 'G09-KQ003311',
+        name: 'Bản chính hoặc bản sao có chứng thực hoặc bản chính kèm theo bản sao để đối...',
+        isOutput: false,
+        template: '',
+        quantities: ['1 Bản chính', '1 Bản điện tử'],
+        status: 'Mở',
+        process: 'Tất cả',
+        order: 0,
+        allowedFormats: []
+      }
+    ];
+
+    let activeRowId = 1;
+    let tempSelectedFormats = [];
+    let isFormatDropdownOpen = false;
+    let formatSearchKeyword = '';
+
+    // RENDER BẢNG DỮ LIỆU
+    function renderTable() {
+      const tbody = document.getElementById('documentTableBody');
+      tbody.innerHTML = '';
+
+      documentRows.forEach((row) => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-[#fdf8f5]/70 transition-colors';
+
+        // Hiển thị badge nhỏ định dạng file đã cấu hình bên dưới tên giấy tờ (nếu có)
+        const formatBadgesHtml = row.allowedFormats.length > 0
+          ? `<div class="mt-1.5 flex flex-wrap items-center gap-1">
+               <span class="text-[11px] text-slate-500">Định dạng file:</span>
+               ${row.allowedFormats.map(ext => `<span class="inline-block px-1.5 py-[1px] bg-[#f7ebe3] text-[#b86b43] border border-[#e6cbb9] rounded text-[11px] font-medium">${ext}</span>`).join('')}
+             </div>`
+          : '';
+
+        tr.innerHTML = `
+          <td class="py-3.5 px-3.5 text-center font-normal text-[#1e293b] align-middle">${row.stt}</td>
+          <td class="py-3.5 px-3.5 align-middle">
+            <a href="javascript:void(0)" onclick="openFormatModalForRow(${row.id})" class="text-[#c26a3d] hover:underline font-normal break-words leading-snug block">
+              ${row.shortCode}
+            </a>
+          </td>
+          <td class="py-3.5 px-3.5 align-middle">
+            <div class="text-[#1e293b] leading-snug">${row.name}</div>
+            ${formatBadgesHtml}
+          </td>
+          <td class="py-3.5 px-3 text-center align-middle">
+            ${row.isOutput ? '<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">Có</span>' : ''}
+          </td>
+          <td class="py-3.5 px-3 align-middle text-slate-600">${row.template}</td>
+          <td class="py-3.5 px-3.5 align-middle">
+            <div class="space-y-0.5 text-[#1e293b] leading-snug">
+              ${row.quantities.map(q => `<div>${q}</div>`).join('')}
+            </div>
+          </td>
+          <td class="py-3.5 px-3 align-middle">${row.status}</td>
+          <td class="py-3.5 px-3 align-middle">${row.process}</td>
+          <td class="py-3.5 px-3 align-middle">${row.order}</td>
+          <td class="py-3.5 px-3.5 text-center align-middle">
+            <button type="button" id="actionBtn_${row.id}" onclick="openActionMenu(event, ${row.id})" class="action-trigger-btn w-8 h-8 rounded-lg inline-flex items-center justify-center text-[#1e293b] hover:bg-[#f7ebe3] hover:text-[#b86b43] transition-colors" title="Thao tác">
+              <i data-lucide="more-horizontal" class="w-5 h-5"></i>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      lucide.createIcons();
+    }
+
+    // MỞ MENU POPOVER THAO TÁC
+    function positionActionMenuForButton(btn, rowId) {
+      const menu = document.getElementById('actionDropdownMenu');
+      if (!btn) return;
+
+      activeRowId = rowId;
+      const rect = btn.getBoundingClientRect();
+      menu.classList.remove('hidden');
+
+      const menuWidth = 238;
+      const menuHeight = menu.offsetHeight || 220;
+      let left = rect.right - menuWidth;
+      let top = rect.bottom + 4;
+
+      if (left < 12) left = 12;
+      if (top + menuHeight > window.innerHeight - 12) {
+        top = rect.top - menuHeight - 4;
+      }
+
+      menu.style.left = `${left}px`;
+      menu.style.top = `${top}px`;
+    }
+
+    function openActionMenu(event, rowId) {
+      event.stopPropagation();
+      const menu = document.getElementById('actionDropdownMenu');
+
+      if (activeRowId === rowId && !menu.classList.contains('hidden')) {
+        closeActionMenu();
+        return;
+      }
+
+      positionActionMenuForButton(event.currentTarget, rowId);
+    }
+
+    function closeActionMenu() {
+      document.getElementById('actionDropdownMenu').classList.add('hidden');
+    }
+
+    function handleActionClick(actionType) {
+      const row = documentRows.find(r => r.id === activeRowId);
+      closeActionMenu();
+      if (!row) return;
+
+      switch (actionType) {
+        case 'config_format':
+          openFormatModalForRow(row.id);
+          break;
+        case 'update':
+          showToast(`Mở biểu mẫu cập nhật giấy tờ: ${row.shortCode}`, 'info');
+          break;
+        case 'template':
+          showToast(`Quản lý biểu mẫu giấy tờ: ${row.shortCode}`, 'info');
+          break;
+        case 'output':
+          row.isOutput = !row.isOutput;
+          renderTable();
+          showToast(
+            row.isOutput
+              ? `Đã đặt "${row.shortCode}" làm giấy tờ đầu ra.`
+              : `Đã hủy thiết lập giấy tờ đầu ra của "${row.shortCode}".`,
+            'success'
+          );
+          break;
+        case 'delete':
+          showToast(`Đã gửi yêu cầu xóa giấy tờ: ${row.shortCode}`, 'warning');
+          break;
+      }
+    }
+
+    // POPUP CẤU HÌNH ĐỊNH DẠNG FILE
+    function openFormatModalForRow(rowId) {
+      const row = documentRows.find(r => r.id === rowId);
+      if (!row) return;
+
+      closeActionMenu();
+      activeRowId = row.id;
+      tempSelectedFormats = [...row.allowedFormats];
+      formatSearchKeyword = '';
+      document.getElementById('formatSearchInput').value = '';
+
+      document.getElementById('modalDocCode').textContent = row.shortCode;
+      document.getElementById('modalDocName').textContent = row.name;
+
+      renderSelectedChips();
+      renderFormatOptions();
+      toggleFormatDropdown(true);
+
+      const modal = document.getElementById('formatConfigModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      updatePreviewSwitcherUI('modal_open');
+      lucide.createIcons();
+    }
+
+    function closeFormatModal() {
+      const modal = document.getElementById('formatConfigModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      toggleFormatDropdown(false);
+      updatePreviewSwitcherUI('table_menu');
+    }
+
+    function toggleFormatDropdown(forceState) {
+      const dropdown = document.getElementById('formatDropdownList');
+      const arrow = document.getElementById('dropdownArrowIcon');
+
+      isFormatDropdownOpen = typeof forceState === 'boolean' ? forceState : !isFormatDropdownOpen;
+
+      if (isFormatDropdownOpen) {
+        dropdown.classList.remove('hidden');
+        arrow.classList.add('rotate-180');
+      } else {
+        dropdown.classList.add('hidden');
+        arrow.classList.remove('rotate-180');
+      }
+    }
+
+    function renderSelectedChips() {
+      const container = document.getElementById('selectedChipsContainer');
+      const clearBtn = document.getElementById('clearAllIconBtn');
+      const summary = document.getElementById('dropdownSelectedSummary');
+
+      summary.textContent = `Đã chọn: ${tempSelectedFormats.length} định dạng`;
+
+      if (tempSelectedFormats.length === 0) {
+        container.innerHTML = `<span class="text-[13px] text-slate-400 select-none">Chọn 1 hoặc nhiều định dạng file...</span>`;
+        clearBtn.classList.add('hidden');
+        return;
+      }
+
+      clearBtn.classList.remove('hidden');
+      container.innerHTML = tempSelectedFormats.map(ext => `
+        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#f7ebe3] text-[#b86b43] border border-[#e6cbb9] text-[12.5px] font-semibold">
+          <span>${ext}</span>
+          <button type="button" onclick="removeSingleFormat(event, '${ext}')" class="hover:bg-[#b86b43] hover:text-white rounded-full p-0.5 transition-colors" title="Bỏ chọn ${ext}">
+            <i data-lucide="x" class="w-3 h-3"></i>
+          </button>
+        </span>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function renderFormatOptions() {
+      const container = document.getElementById('formatOptionsContainer');
+      const keyword = formatSearchKeyword.trim().toLowerCase();
+
+      const filtered = SYSTEM_FILE_FORMATS.filter(item =>
+        item.ext.toLowerCase().includes(keyword) ||
+        item.desc.toLowerCase().includes(keyword)
+      );
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="py-6 text-center text-slate-400 text-[13px]">
+            Không tìm thấy định dạng phù hợp với "${formatSearchKeyword}"
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        const isChecked = tempSelectedFormats.includes(item.ext);
+        return `
+          <div onclick="toggleFormatItem('${item.ext}')" class="px-3.5 py-2.5 flex items-center gap-3 cursor-pointer transition-colors ${isChecked ? 'bg-[#fdf8f5]' : 'hover:bg-slate-50'}">
+            <div class="w-4 h-4 rounded border flex items-center justify-center shrink-0 transition-colors ${isChecked ? 'bg-[#b86b43] border-[#b86b43] text-white' : 'border-slate-300 bg-white'}">
+              ${isChecked ? '<i data-lucide="check" class="w-3 h-3 stroke-[3]"></i>' : ''}
+            </div>
+            <div class="text-[13px] leading-snug truncate">
+              <span class="font-semibold ${isChecked ? 'text-[#b86b43]' : 'text-[#1e293b]'}">${item.ext}</span>
+              <span class="text-slate-500"> — ${item.desc}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      lucide.createIcons();
+    }
+
+    function toggleFormatItem(ext) {
+      const idx = tempSelectedFormats.indexOf(ext);
+      if (idx > -1) {
+        tempSelectedFormats.splice(idx, 1);
+      } else {
+        tempSelectedFormats.push(ext);
+      }
+      renderSelectedChips();
+      renderFormatOptions();
+    }
+
+    function removeSingleFormat(event, ext) {
+      event.stopPropagation();
+      tempSelectedFormats = tempSelectedFormats.filter(item => item !== ext);
+      renderSelectedChips();
+      renderFormatOptions();
+    }
+
+    function selectAllFormats() {
+      tempSelectedFormats = SYSTEM_FILE_FORMATS.map(f => f.ext);
+      renderSelectedChips();
+      renderFormatOptions();
+    }
+
+    function clearAllFormats(event) {
+      if (event) event.stopPropagation();
+      tempSelectedFormats = [];
+      renderSelectedChips();
+      renderFormatOptions();
+    }
+
+    function filterFormatOptions(val) {
+      formatSearchKeyword = val;
+      renderFormatOptions();
+    }
+
+    function saveFormatConfig() {
+      const row = documentRows.find(r => r.id === activeRowId);
+      if (!row) return;
+
+      row.allowedFormats = [...tempSelectedFormats];
+      renderTable();
+      closeFormatModal();
+      showToast('Cập nhật cấu hình định dạng file thành công!', 'success');
+    }
+
+    // CHUYỂN ĐỔI CHẾ ĐỘ XEM NHANH (HỖ TRỢ CHỤP ẢNH TÀI LIỆU BA)
+    function updatePreviewSwitcherUI(mode) {
+      const btnTable = document.getElementById('btnModeTableMenu');
+      const btnModal = document.getElementById('btnModeModal');
+
+      if (mode === 'modal_open') {
+        btnModal.className = 'px-2.5 py-1.5 rounded-lg font-semibold bg-[#b86b43] text-white transition-colors';
+        btnTable.className = 'px-2.5 py-1.5 rounded-lg font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors';
+      } else {
+        btnTable.className = 'px-2.5 py-1.5 rounded-lg font-semibold bg-[#b86b43] text-white transition-colors';
+        btnModal.className = 'px-2.5 py-1.5 rounded-lg font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors';
+      }
+    }
+
+    function switchPreviewMode(mode) {
+      if (mode === 'modal_open') {
+        openFormatModalForRow(activeRowId || 1);
+      } else {
+        closeFormatModal();
+        const btn = document.getElementById('actionBtn_1');
+        positionActionMenuForButton(btn, 1);
+      }
+      updatePreviewSwitcherUI(mode);
+    }
+
+    function togglePreviewBarBody() {
+      document.getElementById('previewBarBody').classList.toggle('hidden');
+    }
+
+    // SIDEBAR & TOAST
+    function toggleSidebar(force) {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+
+      if (window.innerWidth < 1024) {
+        const willOpen = typeof force === 'boolean' ? force : sidebar.classList.contains('-translate-x-full');
+        if (willOpen) {
+          sidebar.classList.remove('-translate-x-full');
+          overlay.classList.remove('hidden');
+        } else {
+          sidebar.classList.add('-translate-x-full');
+          overlay.classList.add('hidden');
+        }
+      } else {
+        sidebar.classList.toggle('hidden');
+      }
+    }
+
+    function toggleSubmenu() {
+      const submenu = document.getElementById('oneDoorSubmenu');
+      const chevron = document.getElementById('submenuChevron');
+      submenu.classList.toggle('hidden');
+      chevron.classList.toggle('rotate-180');
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+
+      const styles = {
+        success: 'bg-emerald-600 text-white border-emerald-700',
+        info: 'bg-[#1e293b] text-white border-slate-700',
+        warning: 'bg-amber-600 text-white border-amber-700'
+      };
+      const icons = {
+        success: 'check-circle-2',
+        info: 'info',
+        warning: 'alert-triangle'
+      };
+
+      toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-xl shadow-lg border text-[13px] font-medium max-w-md animate-pop ${styles[type] || styles.success}`;
+      toast.innerHTML = `
+        <i data-lucide="${icons[type] || 'check-circle-2'}" class="w-4 h-4 shrink-0"></i>
+        <span>${message}</span>
+      `;
+
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-6px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 260);
+      }, 3200);
+    }
+
+    // ĐÓNG POPOVER / DROPDOWN KHI CLICK RA NGOÀI
+    document.addEventListener('click', (e) => {
+      const actionMenu = document.getElementById('actionDropdownMenu');
+      const previewBar = document.getElementById('previewSwitcherBar');
+      if (!actionMenu.contains(e.target) && !e.target.closest('.action-trigger-btn') && !previewBar.contains(e.target)) {
+        closeActionMenu();
+      }
+
+      const multiSelectContainer = document.getElementById('multiSelectContainer');
+      if (isFormatDropdownOpen && multiSelectContainer && !multiSelectContainer.contains(e.target)) {
+        toggleFormatDropdown(false);
+      }
+    });
+
+    // TỰ ĐỘNG CẬP NHẬT VỊ TRÍ MENU POPOVER KHI RESIZE MÀN HÌNH
+    window.addEventListener('resize', () => {
+      const menu = document.getElementById('actionDropdownMenu');
+      if (!menu.classList.contains('hidden') && activeRowId) {
+        const btn = document.getElementById(`actionBtn_${activeRowId}`);
+        positionActionMenuForButton(btn, activeRowId);
+      }
+    });
+
+    // KHỞI TẠO MẶC ĐỊNH: HIỂN THỊ BẢNG + MỞ SẴN MENU THAO TÁC DÒNG 1 NHƯ ẢNH GỐC
+    window.addEventListener('DOMContentLoaded', () => {
+      renderTable();
+      lucide.createIcons();
+      requestAnimationFrame(() => {
+        const firstRowBtn = document.getElementById('actionBtn_1');
+        positionActionMenuForButton(firstRowBtn, 1);
+      });
+    });
+  </script>
+</body>
+</html>
